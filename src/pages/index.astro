@@ -7,7 +7,16 @@ const me = {
 	githubUsername: "hola-soy-milk"
 };
 
-const gh = await fetch(`https://api.github.com/users/${me.githubUsername}`)
+console.log(import.meta.env.GH_TOKEN)
+
+try {
+const gh = await fetch(`https://api.github.com/users/${me.githubUsername}`, {
+	headers: {Authentication: `token ${import.meta.env.GH_TOKEN}`}
+})
+} catch(error) {
+	console.log(error)
+}
+console.log(await gh.json());
 ---
 
 <Layout title="Welcome to Astro.">
