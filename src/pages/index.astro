@@ -9,14 +9,10 @@ const me = {
 
 console.log(import.meta.env.GH_TOKEN)
 
-try {
-const gh = await fetch(`https://api.github.com/users/${me.githubUsername}`, {
+const response = await fetch(`https://api.github.com/users/${me.githubUsername}/repos`, {
 	headers: {Authentication: `token ${import.meta.env.GH_TOKEN}`}
 })
-} catch(error) {
-	console.log(error)
-}
-console.log(await gh.json());
+const gh = await response.json();
 ---
 
 <Layout title="Welcome to Astro.">
