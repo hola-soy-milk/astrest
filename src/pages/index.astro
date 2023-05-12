@@ -1,6 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
+import { getCollection } from 'astro:content';
+const talks = await getCollection('talks');
 
 const me = {
   name: "Ramón Huidobro",
@@ -22,6 +24,8 @@ const response = await fetch(
 );
 const repos: [{ name: string; description: string; html_url: string }] =
   await response.json();
+
+
 ---
 
 <Layout title="Welcome to Astro.">
@@ -32,6 +36,15 @@ const repos: [{ name: string; description: string; html_url: string }] =
       />
       <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
     </p>
+    <h2>Talks</h2>
+    <ul role="list" class="link-card-grid">
+      {
+        talks.map(({ slug, data: {title, event, year} }) => (
+          <Card href={`talks/${slug}`} title={title} body={`${event}, ${year}`} />
+        ))
+      }
+    </ul>
+    <h2>Projects on GitHub</h2>
     <ul role="list" class="link-card-grid">
       {
         repos.map(({ name, description, html_url }) => (
