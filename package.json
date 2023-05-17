@@ -12,7 +12,9 @@
   },
   "dependencies": {
     "@astro-community/astro-embed-youtube": "^0.2.2",
-    "astro": "^2.4.1"
+    "@astrojs/preact": "^2.1.0",
+    "astro": "^2.4.1",
+    "preact": "^10.14.1"
   },
   "devDependencies": {
     "prettier": "^2.8.8",
