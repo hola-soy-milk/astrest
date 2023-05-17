@@ -1,8 +1,10 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
-import { getCollection } from 'astro:content';
-const talks = await getCollection('talks');
+import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
+import ramonImg from "../assets/ramon.jpg";
+const talks = await getCollection("talks");
 
 const me = {
   name: "Ramón Huidobro",
@@ -17,17 +19,16 @@ const repoParams = {
 const response = await fetch(
   `https://api.github.com/users/${
     me.githubUsername
-  }/repos?${new URLSearchParams(repoParams).toString()}`,
+  }/repos?${new URLSearchParams(repoParams).toString()}`
 );
 const repos: [{ name: string; description: string; html_url: string }] =
   await response.json();
-
-
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <h1>Welcome to <span class="text-gradient">Astro</span></h1>
+    <Image src={ramonImg} height={300} width={300} alt="Picture of me" />
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
       />
@@ -36,8 +37,12 @@ const repos: [{ name: string; description: string; html_url: string }] =
     <h2>Talks</h2>
     <ul role="list" class="link-card-grid">
       {
-        talks.map(({ slug, data: {title, event, year} }) => (
-          <Card href={`talks/${slug}`} title={title} body={`${event}, ${year}`} />
+        talks.map(({ slug, data: { title, event, year } }) => (
+          <Card
+            href={`talks/${slug}`}
+            title={title}
+            body={`${event}, ${year}`}
+          />
         ))
       }
     </ul>
