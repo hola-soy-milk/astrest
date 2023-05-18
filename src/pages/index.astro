@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout.astro";
 import Card from "../components/Card.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import ogs from "open-graph-scraper";
 import Greeting from "../components/Greeting.jsx";
 import ramonImg from "../assets/ramon.jpg";
 const talks = await getCollection("talks");
@@ -17,13 +18,22 @@ const repoParams = {
   direction: "descending",
 };
 
+type OGImage {
+  height: string, type: string, url: string, width: string
+}
+
 const response = await fetch(
   `https://api.github.com/users/${
     me.githubUsername
   }/repos?${new URLSearchParams(repoParams).toString()}`
 );
-const repos: [{ name: string; description: string; html_url: string }] =
+const repos: [{ name: string; description: string; html_url: string; ogImage?: OGImage}] =
   await response.json();
+
+repos.map(async (repo: { name: string; description: string; html_url: string; ogImage?: any }) => {
+  const {result} = await ogs({url: repo.html_url});
+  repo.ogImage = result.ogImage[0];
+})
 ---
 
 <Layout title="Welcome to Astro.">
