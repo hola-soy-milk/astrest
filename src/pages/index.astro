@@ -1,44 +1,56 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
-import { getCollection } from "astro:content";
-import { Image } from "astro:assets";
-import ogs from "open-graph-scraper";
-import Greeting from "../components/Greeting.jsx";
-import ramonImg from "../assets/ramon.jpg";
-const talks = await getCollection("talks");
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import ogs from 'open-graph-scraper';
+import Greeting from '../components/Greeting.jsx';
+import ramonImg from '../assets/ramon.jpg';
+const talks = await getCollection('talks');
 
 const me = {
-  name: "Ramón Huidobro",
-  githubUsername: "hola-soy-milk",
+  name: 'Ramón Huidobro',
+  githubUsername: 'hola-soy-milk',
 };
 
 const repoParams = {
-  sort: "created",
-  direction: "descending",
+  sort: 'created',
+  direction: 'descending',
 };
 
-type OGImage {
-  height: string, type: string, url: string, width: string
-}
+type OGImage = {
+  height: string;
+  type: string;
+  url: string;
+  width: string;
+};
 
 const response = await fetch(
   `https://api.github.com/users/${
     me.githubUsername
-  }/repos?${new URLSearchParams(repoParams).toString()}`
+  }/repos?${new URLSearchParams(repoParams).toString()}`,
 );
-const repos: [{ name: string; description: string; html_url: string; ogImage?: OGImage}] =
+const repos: [{ name: string; description: string; html_url: string }] =
   await response.json();
 
-repos.map(async (repo: { name: string; description: string; html_url: string; ogImage?: any }) => {
-  const {result} = await ogs({url: repo.html_url});
-  repo.ogImage = result.ogImage[0];
-})
+const reposWithImages: {
+  name: string;
+  description: string;
+  html_url: string;
+  ogImage: OGImage;
+}[] = await Promise.all(
+  repos.map(
+    async (repo: { name: string; description: string; html_url: string }) => {
+      const { result } = await ogs({ url: repo.html_url });
+      return { ...repo, ogImage: result.ogImage[0] };
+    },
+  ),
+);
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
-    <Greeting client:load messages={["Hej", "Buenas", "Hola", "Yo"]} />
+    <Greeting client:load messages={['Hej', 'Buenas', 'Hola', 'Yo']} />
     <Image src={ramonImg} height={300} width={300} alt="Picture of me" />
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
@@ -60,15 +72,36 @@ repos.map(async (repo: { name: string; description: string; html_url: string; og
     <h2>Projects on GitHub</h2>
     <ul role="list" class="link-card-grid">
       {
-        repos.map(({ name, description, html_url }) => (
-          <Card href={html_url} title={name} body={description} />
-        ))
+        reposWithImages.map(
+          ({
+            ogImage: { url, height, width },
+            name,
+            description,
+            html_url,
+          }) => (
+            <a href={html_url}>
+              <Image
+                src={url}
+                height={Number(height)}
+                width={Number(width)}
+                alt={name}
+              />
+            </a>
+          ),
+        )
       }
     </ul>
   </main>
 </Layout>
 
 <style>
+  img {
+    object-fit: cover;
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+    border-radius: 5px;
+  }
   main {
     margin: auto;
     padding: 1.5rem;
