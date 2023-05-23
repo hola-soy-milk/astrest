@@ -4,7 +4,7 @@ import Card from '../components/Card.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import ogs from 'open-graph-scraper';
-import Greeting from '../components/RandomVideo.jsx';
+import RandomVideo from '../components/RandomVideo.jsx';
 import ramonImg from '../assets/ramon.jpg';
 const talks = await getCollection('talks');
 
@@ -50,7 +50,7 @@ const reposWithImages: {
 
 <Layout title="Welcome to Astro.">
   <main>
-    <Greeting client:load messages={['Hej', 'Buenas', 'Hola', 'Yo']} />
+    <RandomVideo client:load talks={talks} />
     <Image src={ramonImg} height={300} width={300} alt="Picture of me" />
     <p class="instructions">
       To get started, open the directory <code>src/pages</code> in your project.<br
