@@ -9,13 +9,13 @@ import ramonImg from '../assets/ramon.jpg';
 const talks = await getCollection('talks');
 
 const me = {
-  name: 'Ramón Huidobro',
-  githubUsername: 'hola-soy-milk',
+  name: "Ramón Huidobro",
+  githubUsername: "hola-soy-milk",
 };
 
 const repoParams = {
-  sort: 'created',
-  direction: 'descending',
+  sort: "created",
+  direction: "descending",
 };
 
 type OGImage = {
@@ -28,7 +28,7 @@ type OGImage = {
 const response = await fetch(
   `https://api.github.com/users/${
     me.githubUsername
-  }/repos?${new URLSearchParams(repoParams).toString()}`,
+  }/repos?${new URLSearchParams(repoParams).toString()}`
 );
 const repos: [{ name: string; description: string; html_url: string }] =
   await response.json();
@@ -43,8 +43,8 @@ const reposWithImages: {
     async (repo: { name: string; description: string; html_url: string }) => {
       const { result } = await ogs({ url: repo.html_url });
       return { ...repo, ogImage: result.ogImage[0] };
-    },
-  ),
+    }
+  )
 );
 ---
 
@@ -87,7 +87,7 @@ const reposWithImages: {
                 alt={name}
               />
             </a>
-          ),
+          )
         )
       }
     </ul>
