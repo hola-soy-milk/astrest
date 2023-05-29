@@ -1,27 +1,29 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { getCollection } from 'astro:content';
-import { YouTube } from '@astro-community/astro-embed-youtube';
+import { getCollection } from "astro:content";
+import { YouTube } from "@astro-community/astro-embed-youtube";
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
-  const talkEntries = await getCollection('talks');
-  return talkEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+  const talkEntries = await getCollection("talks");
+  return talkEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
   }));
 }
 // 2. When it's time to render, you can get the entry directly from the prop
 const { entry } = Astro.props;
-console.log(entry)
+console.log(entry);
 const { Content } = await entry.render();
 ---
+
 <Layout title={entry.data.title}>
-    <main>
-<h1 class="text-gradient">{entry.data.title}</h1>
-<h2></h2>
-<YouTube id={entry.data.href}></YouTube>
-<Content />
+  <main>
+    <h1 class="text-gradient">{entry.data.title}</h1>
+    <h2></h2>
+    <YouTube id={entry.data.videoId} />
+    <Content />
+  </main>
 </Layout>
-</main>
 
 <style>
   main {

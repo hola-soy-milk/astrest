@@ -7,19 +7,14 @@ export default function RandomTalk({talks}) {
 
   const [talk, setTalk] = useState(talks[0]);
 
-  const { slug, data: { title, event, year } } = talk
+  const { slug, data: { title, event, year, videoId } } = talk
 
   return (
     <div>
       <h2>{title}!</h2>
       <a href={`/talks/${slug}`}>
-        <img src={`https://img.youtube.com/vi/<insert-youtube-video-id-here>/mqdefault.jpg`}/>
+        <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt={`Thumbnail for my talk "${title}"`}/>
       </a>
-          <Card
-            href={}
-            title={title}
-            body={`${event}, ${year}`}
-          />
       <button onClick={() => setTalk(randomTalk())}>
         Gimme Another Talk!
       </button>

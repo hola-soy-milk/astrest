@@ -6,7 +6,7 @@ const talkCollection = defineCollection({
     title: z.string(),
     event: z.string(),
     year: z.number(),
-    href: z.string(),
+    videoId: z.string(),
     slidesHref: z.string().optional(),
   }),
 });
