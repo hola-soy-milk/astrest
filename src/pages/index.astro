@@ -5,7 +5,9 @@ import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 import ogs from "open-graph-scraper";
 import RandomTalk from "../components/RandomTalk.jsx";
-import ramonImg from "../assets/ramon.jpg";
+import meImg from "../assets/ramon.jpg";
+import GitHubProject from "../components/GitHubProject.astro";
+import Repo from "../types/Repo";
 const talks = await getCollection("talks");
 
 const me = {
@@ -18,13 +20,6 @@ const repoParams = {
   direction: "descending",
 };
 
-type OGImage = {
-  height?: number;
-  width?: number;
-  type: string;
-  url: string;
-};
-
 const response = await fetch(
   `https://api.github.com/users/${
     me.githubUsername
@@ -35,14 +30,8 @@ const response = await fetch(
 );
 const repos: [{ name: string; description: string; html_url: string }] =
   await response.json();
-console.log(repos);
 
-const reposWithImages: {
-  name: string;
-  description: string;
-  html_url: string;
-  ogImage: OGImage;
-}[] = await Promise.all(
+const reposWithImages: Repo[] = await Promise.all(
   repos.map(
     async (repo: { name: string; description: string; html_url: string }) => {
       const { result } = await ogs({ url: repo.html_url });
@@ -52,48 +41,18 @@ const reposWithImages: {
 );
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title={`${me.name}: Speaker and Open Source Developer`}>
   <main>
     <RandomTalk client:load talks={talks} />
-    <Image src={ramonImg} height={300} width={300} alt="Picture of me" />
-    <p class="instructions">
-      To get started, open the directory <code>src/pages</code> in your project.<br
-      />
-      <strong>Code Challenge:</strong> Tweak the "Welcome to Astro" message above.
-    </p>
+    <Image src={meImg} height={300} width={300} alt="Picture of me" />
     <h2>Projects on GitHub</h2>
     <ul role="list" class="link-card-grid">
-      {
-        reposWithImages.map(
-          ({
-            ogImage: { url, height, width },
-            name,
-            description,
-            html_url,
-          }) => (
-            <a href={html_url}>
-              <Image
-                src={url}
-                height={Number(height)}
-                width={Number(width)}
-                alt={name}
-              />
-            </a>
-          )
-        )
-      }
+      {reposWithImages.map((repo: Repo) => <GitHubProject repo={repo} />)}
     </ul>
   </main>
 </Layout>
 
 <style>
-  img {
-    object-fit: cover;
-    max-width: 100%;
-    height: auto;
-    vertical-align: middle;
-    border-radius: 5px;
-  }
   main {
     margin: auto;
     padding: 1.5rem;
