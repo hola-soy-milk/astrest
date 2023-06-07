@@ -11,19 +11,23 @@ import { queryReposForUser } from "../utils/GitHubRepos"
 const talks = await getCollection("talks");
 
 const me = {
-  name: "Ramón Huidobro",
+  firstNames: "Ramón",
+  lastNames: "Huidobro",
   gitHubUsername: "hola-soy-milk",
 };
+
+me.fullName = [me.firstNames, me.lastNames].join(" ")
 
 const reposWithImages = await queryReposForUser(me.gitHubUsername);
 ---
 
-<Layout title={`${me.name}: Speaker and Open Source Developer`}>
+<Layout title={`${me.fullName}: Speaker and Open Source Developer`}>
   <main>
+    <h1 class="text-gradient">Hey there, I'm {me.firstNames}! 👋</h1>
+    <h2>Tech Talks</h2>
     <RandomTalk client:load talks={talks} />
-    <Image src={meImg} height={300} width={300} alt="Picture of me" />
-    <h2>Projects on GitHub</h2>
-    <ul role="list" class="link-card-grid">
+    <h2>GitHub Projects</h2>
+    <ul role="list" class="repo-grid">
       {reposWithImages.map((repo: Repo) => <GitHubProject repo={repo} />)}
     </ul>
   </main>
@@ -47,26 +51,7 @@ const reposWithImages = await queryReposForUser(me.gitHubUsername);
     background-size: 400%;
     background-position: 0%;
   }
-  .instructions {
-    line-height: 1.6;
-    margin: 1rem 0;
-    border: 1px solid rgba(var(--accent), 25%);
-    background-color: white;
-    padding: 1rem;
-    border-radius: 0.4rem;
-  }
-  .instructions code {
-    font-size: 0.875em;
-    font-weight: bold;
-    background: rgba(var(--accent), 12%);
-    color: rgb(var(--accent));
-    border-radius: 4px;
-    padding: 0.3em 0.45em;
-  }
-  .instructions strong {
-    color: rgb(var(--accent));
-  }
-  .link-card-grid {
+  .repo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
     gap: 1rem;

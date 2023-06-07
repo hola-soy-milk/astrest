@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
+import './RandomTalk.css';
 
 export default function RandomTalk({talks}) {
 
@@ -10,13 +11,13 @@ export default function RandomTalk({talks}) {
   const { slug, data: { title, event, year, videoId } } = talk
 
   return (
-    <div>
-      <h2>{title}!</h2>
+    <div class="container">
+      <h3>{title}!</h3>
       <a href={`/talks/${slug}`}>
         <img src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`} alt={`Thumbnail for my talk "${title}"`}/>
       </a>
       <button onClick={() => setTalk(randomTalk())}>
-        Gimme Another Talk!
+        Show Another Talk!
       </button>
     </div>
   );
